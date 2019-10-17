@@ -1,0 +1,15 @@
+* {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+.ios .screen ::-webkit-scrollbar,
+::-webkit-scrollbar {
+  height: 0 !important;
+  width: 0 !important;
+  display: none;
+}
