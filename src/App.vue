@@ -21,22 +21,27 @@ export default Vue.extend({
       {
         id: 0,
         size: 600,
+        fixed: false,
       },
       {
         id: 1,
         size: 300,
+        fixed: true,
       },
       {
         id: 2,
         size: 500,
+        fixed: true,
       },
       {
         id: 3,
         size: 200,
+        fixed: true,
       },
       {
         id: 4,
         size: 400,
+        fixed: true,
       },
     ],
     containerHeight: 0,
@@ -45,6 +50,7 @@ export default Vue.extend({
     initContainerHeight(): void{
       const viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight
       || 0);
+      // For each pictures to display, we add a viewport height to the scrolling area
       this.pictures.forEach(() => {
         this.containerHeight += viewPortHeight;
       });
@@ -57,11 +63,24 @@ export default Vue.extend({
     },
     handleScroll(event: any): void {
       console.log(window.scrollY);
+      // We get the currently moving picture index from the pictures array
+      const movingPictureIdx = this.pictures.findIndex(picture => picture.fixed === true) - 1;
+      // We get the containers HTMLCollection
+      const containers = document.getElementsByClassName('img-container');
+      // So we can know what is the top offset of the currently moving picture
+      const currentPicOffset = -containers[movingPictureIdx].getBoundingClientRect().top;
+      // If the currently moving picture top offset is greater than the viewport...
+      if (currentPicOffset > containers[movingPictureIdx].clientHeight
+      && movingPictureIdx < this.pictures.length - 1) {
+        // ...Then the next picture ain't fixed anymore
+        this.pictures[movingPictureIdx + 1].fixed = false;
+      }
     },
     getStyle: (pictures: [], picture: any) => {
       const index: number = pictures.length - picture.id;
       return {
         zIndex: index,
+        position: picture.fixed ? 'fixed' : 'relative',
       };
     },
   },
