@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <div id="img-scroll">
+    <div id="img-scroll" v-bind:style="{ 'height' : containerHeight + 'px' }">
       <div id="img-stack">
         <div class="img-container" v-for="picture in pictures" v-bind:key="picture.id"
         v-bind:style="getStyle(pictures, picture)">
@@ -39,8 +39,25 @@ export default Vue.extend({
         size: 400,
       },
     ],
+    containerHeight: 0,
   }),
   methods: {
+    initContainerHeight(): void{
+      const viewPortHeight = Math.max(document.documentElement.clientHeight, window.innerHeight
+      || 0);
+      this.pictures.forEach(() => {
+        this.containerHeight += viewPortHeight;
+      });
+    },
+    addScrollListener(): void {
+      window.addEventListener('scroll', this.handleScroll);
+    },
+    deleteScrollListener(): void {
+      window.removeEventListener('scroll', this.handleScroll);
+    },
+    handleScroll(event: any): void {
+      console.log(window.scrollY);
+    },
     getStyle: (pictures: [], picture: any) => {
       const index: number = pictures.length - picture.id;
       return {
@@ -49,8 +66,11 @@ export default Vue.extend({
     },
   },
   mounted() {
+    this.initContainerHeight();
+    this.addScrollListener();
   },
   destroyed() {
+    this.deleteScrollListener();
   },
 });
 </script>
