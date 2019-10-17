@@ -62,7 +62,6 @@ export default Vue.extend({
       window.removeEventListener('scroll', this.handleScroll);
     },
     handleScroll(event: any): void {
-      console.log(window.scrollY);
       // We get the currently moving picture index from the pictures array
       const movingPictureIdx = this.pictures.findIndex(picture => picture.fixed === true) - 1;
       // We get the containers HTMLCollection
@@ -72,8 +71,13 @@ export default Vue.extend({
       // If the currently moving picture top offset is greater than the viewport...
       if (currentPicOffset > containers[movingPictureIdx].clientHeight
       && movingPictureIdx < this.pictures.length - 1) {
-        // ...Then the next picture ain't fixed anymore
+        // ...then the next picture ain't fixed anymore
         this.pictures[movingPictureIdx + 1].fixed = false;
+      } else
+      // ...else if the currently moving picture top offset goes negative...
+      if (currentPicOffset < 0 && movingPictureIdx >= 1) {
+        // ...then we make this picture fixed again
+        this.pictures[movingPictureIdx].fixed = true;
       }
     },
     getStyle: (pictures: [], picture: any) => {
